@@ -8,10 +8,7 @@ import factories.LeituraComentarioFactory;
 import factories.LeituraStatusFactory;
 import factories.LivroFactory;
 import io.restassured.response.Response;
-import models.DiarioModel;
-import models.LeituraComentarioModel;
-import models.LeituraStatusModel;
-import models.LivroModel;
+import models.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import report.Setup;
@@ -29,10 +26,14 @@ public class LeituraCriarComentarioTest extends BaseTest {
     public void criarComentarioDiarioDoLivroComSucesso() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int diarioId = criarDiarioId(token);
+        DiarioCriado diarioCriado = criarDiario(token);
 
         LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.criarLeituraComentario();
-        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioId, leituraComentarioModel);
+
+        leituraComentarioModel.setPaginaInicial(diarioCriado.paginaInicial());
+        leituraComentarioModel.setPaginaFinal(diarioCriado.paginaFinal());
+
+        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioCriado.diarioId(), leituraComentarioModel);
         responseLeituraComentario
                 .then()
                 .log().body()
@@ -43,11 +44,14 @@ public class LeituraCriarComentarioTest extends BaseTest {
     public void paginaInicialMaiorQuePaginaFinal() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int diarioId = criarDiarioId(token);
+        DiarioCriado diarioCriado = criarDiario(token);
 
         LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.criarLeituraComentario();
-        leituraComentarioModel.setPaginaInicial(leituraComentarioModel.getPaginaFinal()+1);
-        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioId, leituraComentarioModel);
+
+        leituraComentarioModel.setPaginaInicial(diarioCriado.paginaFinal());
+        leituraComentarioModel.setPaginaFinal(diarioCriado.paginaInicial());
+
+        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioCriado.diarioId(), leituraComentarioModel);
         responseLeituraComentario
                 .then()
                 .log().body()
@@ -59,75 +63,77 @@ public class LeituraCriarComentarioTest extends BaseTest {
     public void paginaInicialEPaginaFinalEComentarioNulos() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int diarioId = criarDiarioId(token);
+        DiarioCriado diarioCriado = criarDiario(token);
 
         LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.leituraTodosNulos();
-        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioId, leituraComentarioModel);
+        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioCriado.diarioId(), leituraComentarioModel);
         responseLeituraComentario
                 .then()
                 .log().body()
-                .statusCode(500);
+                .statusCode(400)
+                .body("comentario", equalTo("comentario é obrigatório."));
     }
 
     @Test
     public void criarComentarioComComentarioNulo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int diarioId = criarDiarioId(token);
+        DiarioCriado diarioCriado = criarDiario(token);
 
         LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.criarLeituraComentario();
         leituraComentarioModel.setComentario(null);
-        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioId, leituraComentarioModel);
+        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioCriado.diarioId(), leituraComentarioModel);
         responseLeituraComentario
                 .then()
                 .log().body()
-                .statusCode(201);
+                .statusCode(400)
+                .body("comentario", equalTo("comentario é obrigatório."));
     }
 
     @Test
     public void paginaFinalEComentarioNulos() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int diarioId = criarDiarioId(token);
+        DiarioCriado diarioCriado = criarDiario(token);
 
         LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.criarLeituraComentario();
         leituraComentarioModel.setPaginaFinal(null);
         leituraComentarioModel.setComentario(null);
-        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioId, leituraComentarioModel);
+        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioCriado.diarioId(), leituraComentarioModel);
         responseLeituraComentario
                 .then()
                 .log().body()
-                .body("comentario", equalTo("comentario é obrigatório."))
-                .statusCode(400);
+                .statusCode(400)
+                .body("comentario", equalTo("comentario é obrigatório."));
     }
 
     @Test
     public void paginaInicialEComentarioNulo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int diarioId = criarDiarioId(token);
+        DiarioCriado diarioCriado = criarDiario(token);
 
         LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.criarLeituraComentario();
         leituraComentarioModel.setPaginaInicial(null);
         leituraComentarioModel.setComentario(null);
-        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioId, leituraComentarioModel);
+        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioCriado.diarioId(), leituraComentarioModel);
         responseLeituraComentario
                 .then()
                 .log().body()
-                .body("comentario", equalTo("comentario é obrigatório."))
-                .statusCode(400);
+                .statusCode(400)
+                .body("comentario", equalTo("comentario é obrigatório."));
     }
 
     @Test
     public void paginaInicialEPaginaFinalNulos() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int diarioId = criarDiarioId(token);
+        DiarioCriado diarioCriado = criarDiario(token);
 
         LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.criarLeituraComentario();
         leituraComentarioModel.setPaginaInicial(null);
         leituraComentarioModel.setPaginaFinal(null);
-        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioId, leituraComentarioModel);
+        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioCriado.diarioId(), leituraComentarioModel);
         responseLeituraComentario
                 .then()
                 .log().body()
@@ -138,93 +144,99 @@ public class LeituraCriarComentarioTest extends BaseTest {
     public void paginaInicialValorNegativo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int diarioId = criarDiarioId(token);
+        DiarioCriado diarioCriado = criarDiario(token);
 
         LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.criarLeituraComentario();
         leituraComentarioModel.setPaginaInicial(-1);
-        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioId, leituraComentarioModel);
+        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioCriado.diarioId(), leituraComentarioModel);
         responseLeituraComentario
                 .then()
                 .log().body()
-                .body("paginaInicial", equalTo("paginaInicial deve ser um valor positivo."))
-                .statusCode(400);
+                .statusCode(400)
+                .body("paginaInicial", equalTo("paginaInicial deve ser um valor positivo."));
     }
 
     @Test
     public void paginaFinalValorNegativo() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int diarioId = criarDiarioId(token);
+        DiarioCriado diarioCriado = criarDiario(token);
 
         LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.criarLeituraComentario();
         leituraComentarioModel.setPaginaFinal(-1);
-        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioId, leituraComentarioModel);
+        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioCriado.diarioId(), leituraComentarioModel);
         responseLeituraComentario
                 .then()
                 .log().body()
-                .body("paginaFinal", equalTo("paginaFinal deve ser um valor positivo."))
-                .statusCode(400);
+                .statusCode(400)
+                .body("paginaFinal", equalTo("paginaFinal deve ser um valor positivo."));
     }
 
     @Test
     public void paginaInicialEPaginaFinalZero() throws IOException {
         String token = UsuarioHelper.loginLeitor();
 
-        int diarioId = criarDiarioId(token);
+        DiarioCriado diarioCriado = criarDiario(token);
 
         LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.criarLeituraComentario();
         leituraComentarioModel.setPaginaInicial(0);
         leituraComentarioModel.setPaginaFinal(0);
 
-        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioId, leituraComentarioModel);
+        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioCriado.diarioId(), leituraComentarioModel);
         responseLeituraComentario
                 .then()
                 .log().body()
                 .statusCode(400)
-                .body(equalTo("A página inicial deve ser menor que a página final."));
+                .body("paginaFinal", equalTo("paginaFinal deve ser um valor positivo."),
+                        "paginaInicial", equalTo("paginaInicial deve ser um valor positivo."));
     }
 
-    private int criarDiarioId(String token) throws IOException {
+    @Test
+    public void paginaFinalMaiorQueTotalPaginasLivro() throws IOException {
+        String token = UsuarioHelper.loginLeitor();
 
-        LivroModel livro = LivroFactory.criarLivroIsbn13();
+        DiarioCriado diarioCriado = criarDiario(token);
 
-        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livro);
+        LeituraComentarioModel leituraComentarioModel = LeituraComentarioFactory.criarLeituraComentario();
+        leituraComentarioModel.setPaginaInicial(diarioCriado.paginaInicial());
+        leituraComentarioModel.setPaginaFinal(diarioCriado.paginaFinal()+1);
 
+        Response responseLeituraComentario = LeituraClient.criarLeituraComentario(token, diarioCriado.diarioId(), leituraComentarioModel);
+        responseLeituraComentario
+                .then()
+                .log().body()
+                .statusCode(400);
+    }
+
+    private DiarioCriado criarDiario(String token) throws IOException {
+        LivroModel livroModel = LivroFactory.criarLivroIsbn13();
+        Response responseLivro = LivroHelper.criarLivroCadastrar(token, livroModel);
         responseLivro
                 .then()
                 .log().body()
                 .statusCode(201);
-
-        int livroId = responseLivro
-                .jsonPath()
-                .getInt("id");
+        int livroId = responseLivro.jsonPath().getInt("id");
 
         LeituraStatusModel leituraStatusModel = LeituraStatusFactory.criarLeituraLivroStatusQueroLer(livroId);
-
         Response responseLeitura = LeituraClient.criarLeituraStatus(token,leituraStatusModel);
-
         responseLeitura
                 .then()
                 .statusCode(201);
 
         DiarioModel diarioModel = DiarioFactory.criarDiarioLido(livroId);
-
+        diarioModel.setPaginasLidas(livroModel.getNumeroDePaginas());
         Response responseDiario = DiarioClient.criarDiario(token, diarioModel);
 
         responseDiario
                 .then()
                 .statusCode(201);
 
-        Response responseDiarios = DiarioClient.buscarDiarioPorLivro(token, livroId);
+        int diarioId = responseDiario.jsonPath().getInt("id");
 
-        responseDiarios
-                .then()
-                .log().body()
-                .statusCode(200);
+        int paginaInicial = 1;
+        int paginaFinal = livroModel.getNumeroDePaginas();
 
-        return responseDiarios
-                .jsonPath()
-                .getInt("id");
+        return new DiarioCriado(diarioId, paginaInicial, paginaFinal);
     }
 
 }
