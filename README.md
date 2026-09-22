@@ -127,7 +127,7 @@ PUT /usuarios/dados-adicionais
 PUT /usuarios/alterar-senha  
 PUT /usuarios/administrador **(manutenção)**    
 POST /usuarios/livro  
-GET /usuarios/{id}/comentarios **(manutenção)**  
+GET /usuarios/{id}/comentarios  
 GET /usuarios/fotos
 ### Login
 POST /logins  
