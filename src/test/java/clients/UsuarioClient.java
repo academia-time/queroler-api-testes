@@ -105,4 +105,12 @@ public class UsuarioClient {
                 .delete(EndPoints.USUARIOS);
     }
 
+    public static Response usuarioIdComentario(String token, int usuarioId) {
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .pathParam("id", usuarioId)
+            .when()
+                .get(EndPoints.USUARIOS_ID_COMENTARIOS);
+    }
+
 }
