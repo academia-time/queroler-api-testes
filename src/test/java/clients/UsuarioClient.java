@@ -113,4 +113,28 @@ public class UsuarioClient {
                 .get(EndPoints.USUARIOS_ID_COMENTARIOS);
     }
 
+    public static Response usuarioAtualizarAdministrador(String token, Object body) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        String dadosJson = mapper.writeValueAsString(body);
+
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .multiPart("dados", dadosJson, "application/json")
+            .when()
+                .put(EndPoints.USUARIOS_ADMINISTRADOR);
+    }
+
+    public static Response usuarioAtualizarAdministradorComFoto(String token, Object body, File imagem) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        String dadosJson = mapper.writeValueAsString(body);
+        String contentType = Files.probeContentType(imagem.toPath());
+
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .multiPart("dados", dadosJson, "application/json")
+                .multiPart("imagem", imagem, contentType)
+            .when()
+                .put(EndPoints.USUARIOS_ADMINISTRADOR);
+    }
+
 }
