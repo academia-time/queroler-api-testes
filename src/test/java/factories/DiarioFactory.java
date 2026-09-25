@@ -51,17 +51,17 @@ public class DiarioFactory {
 
     }
 
-    public static DiarioModel criarDiarioLendo(Integer livroId) {
+    public static DiarioModel criarDiarioLendo(Integer livroId, Integer numeroDePaginas) {
 
         DiarioModel diario = new DiarioModel();
 
         diario.setLivroId(livroId);
-        diario.setInicioDaLeitura("08/03/2026 10:00:00");
+        diario.setInicioDaLeitura(DataFakerUtils.dataInicio());
         diario.setTerminoDaLeitura(null);
-        diario.setPaginasLidas(20);
-        diario.setNota(1.0);
-        diario.setTituloDaResenha("Teste titulo resenha lendo");
-        diario.setResenha("resenha lendo");
+        diario.setPaginasLidas(numeroDePaginas);
+        diario.setNota(DataFakerUtils.nota());
+        diario.setTituloDaResenha(DataFakerUtils.tituloResenha());
+        diario.setResenha(DataFakerUtils.resenha());
         diario.setSpoiler(true);
         return diario;
 
