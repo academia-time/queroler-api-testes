@@ -125,7 +125,7 @@ POST /usuarios
 DELETE /usuarios  
 PUT /usuarios/dados-adicionais  
 PUT /usuarios/alterar-senha  
-PUT /usuarios/administrador **(manutenção)**    
+PUT /usuarios/administrador  
 POST /usuarios/livro  
 GET /usuarios/{id}/comentarios  
 GET /usuarios/fotos
@@ -150,7 +150,7 @@ PUT /diario/{id}
 DELETE /diario/{id}  
 GET /diario  
 POST /diario  
-GET /diario/acompanhamento **(manutenção)**  
+GET /diario/acompanhamento 
 ### Acompanhamento de leitura
 POST /leituras/{diarioId}/comentarios
 ## EM BREVE
