@@ -2,6 +2,7 @@ package utils;
 
 import net.datafaker.Faker;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
@@ -169,5 +170,9 @@ public class DataFakerUtils {
 
     public static int metaPaginasDia() {
         return faker.number().numberBetween(1, 500);
+    }
+
+    public static File fotoPerfil() {
+        return new File("src/test/resources/imagens/perfil.png");
     }
 }
