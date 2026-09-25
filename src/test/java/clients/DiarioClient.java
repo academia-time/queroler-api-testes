@@ -61,4 +61,13 @@ public class DiarioClient {
                 .put(EndPoints.DIARIO_ID);
     }
 
+    public static Response diarioAcompanhamento(String token) {
+
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .contentType(ContentType.JSON)
+                .when()
+                .get(EndPoints.DIARIO_ACOMPANHAMENTO);
+    }
+
 }
