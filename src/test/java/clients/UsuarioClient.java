@@ -137,4 +137,14 @@ public class UsuarioClient {
                 .put(EndPoints.USUARIOS_ADMINISTRADOR);
     }
 
+    public static Response usuarioAtualizarSomenteComFotoAdministrador(String token, File imagem) throws IOException {
+        String contentType = Files.probeContentType(imagem.toPath());
+
+        return given(BaseTest.requestSpecification)
+                .cookie("jwt", token)
+                .multiPart("imagem", imagem, contentType)
+            .when()
+                .put(EndPoints.USUARIOS_ADMINISTRADOR);
+    }
+
 }
