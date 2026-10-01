@@ -26,6 +26,17 @@ public class UsuarioAtualizarAdministradorFactory {
         usuarioModelAdm.setCidade(DataFakerUtils.cidade());
         usuarioModelAdm.setEstado(DataFakerUtils.estado());
         usuarioModelAdm.setPais(DataFakerUtils.pais());
+
+        return usuarioModelAdm;
+    }
+
+    public static UsuarioAtualizarAdministradorModel atualizarAdministradorSemDadosSemfoto() {
+        UsuarioAtualizarAdministradorModel usuarioModelAdm = new UsuarioAtualizarAdministradorModel();
+
+        usuarioModelAdm.setDataDeNascimento(null);
+        usuarioModelAdm.setCidade(null);
+        usuarioModelAdm.setEstado(null);
+        usuarioModelAdm.setPais(null);
         usuarioModelAdm.setFotoUrl(null);
 
         return usuarioModelAdm;
